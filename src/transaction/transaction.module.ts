@@ -14,5 +14,6 @@ import { User, UserSchema } from '../user/user.schema';
   ],
   controllers: [TransactionController],
   providers: [TransactionService],
+  exports: [TransactionService],
 })
 export class TransactionModule {}

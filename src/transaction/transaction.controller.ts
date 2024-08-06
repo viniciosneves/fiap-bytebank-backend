@@ -50,7 +50,7 @@ export class TransactionController {
     type: [Transaction],
   })
   async findByUser(@Request() req): Promise<Transaction[]> {
-    return this.transactionService.findByUser(req.user._id);
+    return this.transactionService.findByUser(req.user._id.toString());
   }
 
   @UseGuards(JwtAuthGuard)

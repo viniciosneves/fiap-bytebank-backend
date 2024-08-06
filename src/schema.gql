@@ -1,0 +1,64 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AccountModel {
+  balance: Float!
+  transactions: [TransactionModel!]!
+}
+
+input CreateTransactionDto {
+  type: String!
+  value: Float!
+}
+
+input CreateUserDto {
+  email: String!
+  name: String!
+  password: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type LoginResponseModel {
+  accessToken: String!
+}
+
+input LoginUserDto {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  addTransaction(input: CreateTransactionDto!): TransactionModel!
+  login(input: LoginUserDto!): LoginResponseModel!
+  register(input: CreateUserDto!): UserModel!
+}
+
+type Query {
+  account: AccountModel!
+  getTransactionTypes: [TransactionTypeDto!]!
+  me: UserModel!
+}
+
+type TransactionModel {
+  _id: ID!
+  createdAt: DateTime!
+  type: String!
+  userId: String!
+  value: Float!
+}
+
+type TransactionTypeDto {
+  display: String!
+  value: String!
+}
+
+type UserModel {
+  _id: ID!
+  email: String!
+  name: String!
+}

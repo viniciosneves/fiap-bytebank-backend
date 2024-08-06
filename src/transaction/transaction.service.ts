@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import {
   Transaction,
   TransactionType,
@@ -17,7 +17,7 @@ export class TransactionService {
   ) {}
 
   async create(
-    userId: string,
+    userId: string | Types.ObjectId,
     createTransactionDto: CreateTransactionDto,
   ): Promise<Transaction> {
     let { value } = createTransactionDto;
@@ -30,6 +30,8 @@ export class TransactionService {
       value = -value;
     }
 
+    userId = this.parseUserId(userId);
+
     const transaction = new this.transactionModel({
       user: userId,
       value,
@@ -39,8 +41,20 @@ export class TransactionService {
     return transaction.save();
   }
 
-  async findByUser(userId: string): Promise<Transaction[]> {
+  async findByUser(userId: string | Types.ObjectId): Promise<Transaction[]> {
+    userId = this.parseUserId(userId);
     return this.transactionModel.find({ user: userId }).exec();
+  }
+
+  private parseUserId(userId: string | Types.ObjectId) {
+    if (typeof userId === 'string') {
+      if (Types.ObjectId.isValid(userId)) {
+        userId = new Types.ObjectId(userId);
+      } else {
+        throw new BadRequestException('Invalid user ID format');
+      }
+    }
+    return userId;
   }
 
   async getBalance(userId: string): Promise<number> {
